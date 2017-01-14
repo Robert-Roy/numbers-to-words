@@ -55,34 +55,34 @@ public class NumToWord {
                 input = "";
             }
         }
-        for (int i = 0; i < input.length(); i++) {
+        while (!input.equals("")) {
             //Note: There are no commas in the input at this point, comma is only
             //used for ease of reference
-            
             //number of commas that would be in the number written out
             int commas = (input.length() - 1) / 3;
-             //everything before the comma (or end, if there is not one)
+            //everything before the comma (or end, if there is not one)
             int precomma = input.length() % 3;
             // input without length cannot get to this point, so 0 is always 3
             if (precomma == 0) {
                 precomma = 3;
             }
             // substring of everything before the comma
-            String strThisUnit = input.substring(0, precomma); 
+            String strThisUnit = input.substring(0, precomma);
             //loop trims zeroes at the beginning of numbers
             for (int a = 0; a < strThisUnit.length(); a++) {
                 if (strThisUnit.substring(a, a + 1).equals("0")) {
+                    // remove first letter of string
                     strThisUnit = strThisUnit.substring(a + 1, strThisUnit.length());
+                    // move counter back
                     a--;
-                    //precomma--;
                 } else {
                     // if a nonzero number is hit, output is created
                     output = output + wordsFromNum(strThisUnit) + UNITS[commas];
-                    // input is cut shorter to remove 
-                    input = input.substring(precomma, input.length());
                     break;
                 }
             }
+            // input is cut shorter to remove addressed portion
+            input = input.substring(precomma, input.length());
         }
         if (output.equals("")) {
             output = "zero"; // if no output has been added yet, result is zero
