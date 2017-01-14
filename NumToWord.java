@@ -12,53 +12,66 @@ import java.io.InputStreamReader;
  * @author Robert Roy <www.robertsworkspace.com>
  */
 public class NumToWord {
+
+    private static final String[] UNITS = new String[]{
+        "",
+        " thousand ",
+        " million ",
+        " billion ",
+        " trillion ",
+        " quadrillion ",
+        " quintillion ",
+        " sextillion ",
+        " septillion ",
+        " octillion ",
+        " nonillion ",
+        " decillion ",
+        " undecillion ",
+        " duodecillion ",
+        " tredecillion ",
+        " quattuordecillion ",
+        " quindecillion ",
+        " sexdecillion ",
+        " septendecillion ",
+        " octodecillion ",
+        " novemdecillion ",
+        " vigintillion ",};
+
     public static void main(String[] args) {
-        // TODO code application logic here
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        System.out.print("Feed me:");
+        System.out.print("Input a number:");
         String input = "";
+        String output = "";
         try {
             input = br.readLine();
         } catch (IOException ex) {
             System.out.println("This program has encountered an error.");
-            System.exit(1);
+            System.exit(0);
         }
-        String output = "";
-        int num = Integer.parseInt(input);
-        if (num == 0) {
-            System.out.println("zero");
-            input = "";
-        } else if (input.length() > 6) {
-            String strmillions = input.substring(0, input.length() - 6);
-            int intmillions = Integer.parseInt(strmillions);
-            if (intmillions < 20) {
-                output = wordsFromNum(strmillions) + " million ";
-            } else {
-                output = wordsFromNum(strmillions) + " million ";
-            }
-            input = input.substring(input.length() - 6, input.length());
+        if(input.length() > 66){
+            System.out.println("This number is too large");
+            System.exit(0);
         }
-
-        if (input.length() > 3) {
-            String strthousands = input.substring(0, input.length() - 3);
-            int intthousands = Integer.parseInt(strthousands);
-            if (intthousands < 20) {
-                output = output + wordsFromNum(strthousands) + " thousand ";
-            } else {
-                output = output + wordsFromNum(strthousands) + " thousand ";
+        for (int i = 0; i < input.length(); i++) {
+            int commas = (input.length() - 1) / 3;
+            int precomma = input.length() % 3;
+            if (precomma == 0) {
+                precomma = 3;
             }
-            input = input.substring(input.length() - 3, input.length());
+            String strThisUnit = input.substring(0, precomma);
+            for (int a = 0; a < strThisUnit.length(); a++) {
+                if (strThisUnit.substring(a, a + 1).equals("0")) {
+                    strThisUnit = strThisUnit.substring(a + 1, strThisUnit.length());
+                    a--;
+                } else {
+                    output = output + wordsFromNum(strThisUnit) + UNITS[commas];
+                    input = input.substring(precomma, input.length());
+                    break;
+                }
+            }
         }
-
-        if (input.length()
-                > 0 && input.length() <= 3) {
-            String strones = input.substring(0, input.length());
-            int intones = Integer.parseInt(strones);
-            if (intones < 20) {
-                output = output + wordsFromNum(strones);
-            } else {
-                output = output + wordsFromNum(strones);
-            }
+        if(output.equals("")){
+            output = "zero";
         }
         output = output.replaceAll("  ", " ");
         output = output.trim();
@@ -102,7 +115,7 @@ public class NumToWord {
             case "16":
                 return "sixteen";
             case "17":
-                return "seventeeb";
+                return "seventeen";
             case "18":
                 return "eighteen";
             case "19":
@@ -115,8 +128,8 @@ public class NumToWord {
                 return wordsFromNum(strinput.substring(0, 1));
             case 2:
                 retval = tens(strinput.substring(0, 1));
-                if (!strinput.substring(1, 2).equals("0") && !strinput.substring(0,1).equals("0")) {
-                    retval = retval + "-" ;
+                if (!strinput.substring(1, 2).equals("0") && !strinput.substring(0, 1).equals("0")) {
+                    retval = retval + "-";
                 }
                 retval = retval + wordsFromNum(strinput.substring(1, 2));
                 return retval;
@@ -126,8 +139,7 @@ public class NumToWord {
                 retval = retval + wordsFromNum(strones);
                 return retval;
             default:
-                return "ERROR";
-
+                return " ERROR ";
         }
     }
 
@@ -146,7 +158,7 @@ public class NumToWord {
             case "7":
                 return "seventy";
             case "8":
-                return "eightty";
+                return "eighty";
             case "9":
                 return "ninety";
             default:
