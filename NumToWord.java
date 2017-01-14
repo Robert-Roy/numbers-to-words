@@ -41,10 +41,11 @@ public class NumToWord {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         String input = "";
         String output = "";
+        // Validate Input
         while (!isNumeric(input)) {
             System.out.print("Input a number:");
             try {
-                input = br.readLine();
+                input = br.readLine(); // get user input
             } catch (IOException ex) {
                 System.out.println("This program has encountered an error.");
                 System.exit(0);
@@ -55,32 +56,44 @@ public class NumToWord {
             }
         }
         for (int i = 0; i < input.length(); i++) {
+            //Note: There are no commas in the input at this point, comma is only
+            //used for ease of reference
+            
+            //number of commas that would be in the number written out
             int commas = (input.length() - 1) / 3;
+             //everything before the comma (or end, if there is not one)
             int precomma = input.length() % 3;
+            // input without length cannot get to this point, so 0 is always 3
             if (precomma == 0) {
                 precomma = 3;
             }
-            String strThisUnit = input.substring(0, precomma);
+            // substring of everything before the comma
+            String strThisUnit = input.substring(0, precomma); 
+            //loop trims zeroes at the beginning of numbers
             for (int a = 0; a < strThisUnit.length(); a++) {
                 if (strThisUnit.substring(a, a + 1).equals("0")) {
                     strThisUnit = strThisUnit.substring(a + 1, strThisUnit.length());
                     a--;
+                    //precomma--;
                 } else {
+                    // if a nonzero number is hit, output is created
                     output = output + wordsFromNum(strThisUnit) + UNITS[commas];
+                    // input is cut shorter to remove 
                     input = input.substring(precomma, input.length());
                     break;
                 }
             }
         }
         if (output.equals("")) {
-            output = "zero";
+            output = "zero"; // if no output has been added yet, result is zero
         }
-        output = output.replaceAll("  ", " ");
-        output = output.trim();
+        output = output.replaceAll("  ", " "); // remove doublespaces
+        output = output.trim(); // remove trailing spaces
         System.out.println(output);
     }
 
     public static String wordsFromNum(String strinput) {
+        // return anything 0-19
         switch (strinput) {
             case "0":
                 return "";
@@ -122,25 +135,28 @@ public class NumToWord {
                 return "eighteen";
             case "19":
                 return "nineteen";
-            default:
         }
-        String retval = "";
+        String retval = ""; //return value
         switch (strinput.length()) {
-            case 1:
-                return wordsFromNum(strinput.substring(0, 1));
             case 2:
+                // input >= 20, so must get tens and ones separate
                 retval = tens(strinput.substring(0, 1));
+                // num = XY, if X and Y are not zero, we need a hyphen
                 if (!strinput.substring(1, 2).equals("0") && !strinput.substring(0, 1).equals("0")) {
                     retval = retval + "-";
                 }
+                // recurse for ones
                 retval = retval + wordsFromNum(strinput.substring(1, 2));
                 return retval;
             case 3:
+                // recurse for first digit
                 retval = wordsFromNum(strinput.substring(0, 1)) + " hundred ";
+                // recurse for remaining two digit number
                 String strones = strinput.substring(1, 3);
                 retval = retval + wordsFromNum(strones);
                 return retval;
             default:
+                // should be unreachable, but just in case
                 return " ERROR ";
         }
     }
@@ -169,10 +185,10 @@ public class NumToWord {
     }
 
     public static boolean isNumeric(String input) {
-        final int ALLOWED_DECIMALS = 0;
-        int decimals = 0;
+        final int ALLOWED_DECIMALS = 0; //maximum number of decimals. 0 for ints, 1 for other
+        int decimals = 0; //counter
         if (input.length() == 0) {
-            return false;
+            return false; // "" is not numeric
         }
         for (int i = 0; i < input.length(); i++) {
             switch (input.substring(i, i + 1)) {
@@ -203,6 +219,7 @@ public class NumToWord {
                     }
                     break;
                 default:
+                    // if we got here, input was not numeric
                     return false;
             }
         }
