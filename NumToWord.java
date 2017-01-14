@@ -42,18 +42,19 @@ public class NumToWord {
         String input = "";
         String output = "";
         // Validate Input
-        while (!isNumeric(input)) {
-            System.out.print("Input a number:");
+        while (!isValid(input)) {
+            System.out.print("Input a commaless whole number between 10^67 and -10^67:");
             try {
                 input = br.readLine(); // get user input
             } catch (IOException ex) {
                 System.out.println("This program has encountered an error.");
                 System.exit(0);
             }
-            if (input.length() > 66) {
-                System.out.println("Sorry, that number was too large.");
-                input = "";
-            }
+        }
+        String strNegative = "";
+        if(isNegative(input)){
+            strNegative = "negative ";
+            input = input.substring(1, input.length());
         }
         while (!input.equals("")) {
             //Note: There are no commas in the input at this point, comma is only
@@ -86,6 +87,8 @@ public class NumToWord {
         }
         if (output.equals("")) {
             output = "zero"; // if no output has been added yet, result is zero
+        }else{
+            output = strNegative + output;
         }
         output = output.replaceAll("  ", " "); // remove doublespaces
         output = output.trim(); // remove trailing spaces
@@ -184,6 +187,32 @@ public class NumToWord {
         }
     }
 
+    public static boolean isValid(String input){
+        if(input.equals("")){
+            return false;
+        }
+        if(isNegative(input)){
+            if(!(input.length() < 68)){
+                return false;
+            }
+        }else{
+            if(!(input.length() < 67)){
+                return false;
+            }
+        }
+        if(!isNumeric(input)){
+            return false;
+        }
+        return true;
+    }
+    
+    public static boolean isNegative(String input){
+        if(input.substring(0,1).equals("-")){
+            return true;
+        }
+        return false;
+    }
+    
     public static boolean isNumeric(String input) {
         final int ALLOWED_DECIMALS = 0; //maximum number of decimals. 0 for ints, 1 for other
         int decimals = 0; //counter
@@ -192,6 +221,12 @@ public class NumToWord {
         }
         for (int i = 0; i < input.length(); i++) {
             switch (input.substring(i, i + 1)) {
+                case "-":
+                    if(i == 0){
+                        break;
+                    }else{
+                        return false;
+                    }
                 case "0":
                     break;
                 case "1":
