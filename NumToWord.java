@@ -39,18 +39,20 @@ public class NumToWord {
 
     public static void main(String[] args) {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        System.out.print("Input a number:");
         String input = "";
         String output = "";
-        try {
-            input = br.readLine();
-        } catch (IOException ex) {
-            System.out.println("This program has encountered an error.");
-            System.exit(0);
-        }
-        if(input.length() > 66){
-            System.out.println("This number is too large");
-            System.exit(0);
+        while (!isNumeric(input)) {
+            System.out.print("Input a number:");
+            try {
+                input = br.readLine();
+            } catch (IOException ex) {
+                System.out.println("This program has encountered an error.");
+                System.exit(0);
+            }
+            if (input.length() > 66) {
+                System.out.println("Sorry, that number was too large.");
+                input = "";
+            }
         }
         for (int i = 0; i < input.length(); i++) {
             int commas = (input.length() - 1) / 3;
@@ -70,7 +72,7 @@ public class NumToWord {
                 }
             }
         }
-        if(output.equals("")){
+        if (output.equals("")) {
             output = "zero";
         }
         output = output.replaceAll("  ", " ");
@@ -150,7 +152,7 @@ public class NumToWord {
             case "3":
                 return "thirty";
             case "4":
-                return "fourty";
+                return "forty";
             case "5":
                 return "fifty";
             case "6":
@@ -165,4 +167,46 @@ public class NumToWord {
                 return "";
         }
     }
+
+    public static boolean isNumeric(String input) {
+        final int ALLOWED_DECIMALS = 0;
+        int decimals = 0;
+        if (input.length() == 0) {
+            return false;
+        }
+        for (int i = 0; i < input.length(); i++) {
+            switch (input.substring(i, i + 1)) {
+                case "0":
+                    break;
+                case "1":
+                    break;
+                case "2":
+                    break;
+                case "3":
+                    break;
+                case "4":
+                    break;
+                case "5":
+                    break;
+                case "6":
+                    break;
+                case "7":
+                    break;
+                case "8":
+                    break;
+                case "9":
+                    break;
+                case ".":
+                    decimals++;
+                    if (decimals > ALLOWED_DECIMALS) {
+                        return false;
+                    }
+                    break;
+                default:
+                    return false;
+            }
+        }
+        return true;
+    }
+
 }
