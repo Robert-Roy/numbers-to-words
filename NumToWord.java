@@ -12,16 +12,17 @@ import java.io.InputStreamReader;
  * @author Robert Roy <www.robertsworkspace.com>
  */
 public class NumToWord {
-
-    /**
-     * @param args the command line arguments
-     * @throws java.io.IOException
-     */
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         // TODO code application logic here
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         System.out.print("Feed me:");
-        String input = br.readLine();
+        String input = "";
+        try {
+            input = br.readLine();
+        } catch (IOException ex) {
+            System.out.println("This program has encountered an error.");
+            System.exit(1);
+        }
         String output = "";
         int num = Integer.parseInt(input);
         if (num == 0) {
