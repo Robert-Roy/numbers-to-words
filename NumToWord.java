@@ -28,16 +28,13 @@ public class NumToWord {
         if (num == 0) {
             System.out.println("zero");
             input = "";
-        } else if (num < 20) {
-            System.out.println(nineteenMinus(input));
-            input = "";
         } else if (input.length() > 6) {
             String strmillions = input.substring(0, input.length() - 6);
             int intmillions = Integer.parseInt(strmillions);
             if (intmillions < 20) {
-                output = nineteenMinus(strmillions) + " million ";
+                output = wordsFromNum(strmillions) + " million ";
             } else {
-                output = twentyPlus(strmillions, intmillions) + " million ";
+                output = wordsFromNum(strmillions) + " million ";
             }
             input = input.substring(input.length() - 6, input.length());
         }
@@ -46,9 +43,9 @@ public class NumToWord {
             String strthousands = input.substring(0, input.length() - 3);
             int intthousands = Integer.parseInt(strthousands);
             if (intthousands < 20) {
-                output = output + nineteenMinus(strthousands) + " thousand ";
+                output = output + wordsFromNum(strthousands) + " thousand ";
             } else {
-                output = output + twentyPlus(strthousands, intthousands) + " thousand ";
+                output = output + wordsFromNum(strthousands) + " thousand ";
             }
             input = input.substring(input.length() - 3, input.length());
         }
@@ -58,9 +55,9 @@ public class NumToWord {
             String strones = input.substring(0, input.length());
             int intones = Integer.parseInt(strones);
             if (intones < 20) {
-                output = output + nineteenMinus(strones);
+                output = output + wordsFromNum(strones);
             } else {
-                output = output + twentyPlus(strones, intones);
+                output = output + wordsFromNum(strones);
             }
         }
         output = output.replaceAll("  ", " ");
@@ -68,67 +65,8 @@ public class NumToWord {
         System.out.println(output);
     }
 
-    public static String twentyPlus(String strinput, int intinput) {
-        String retval = "";
-        if (intinput < 20) {
-            return nineteenMinus(strinput.substring(0, 1));
-        }
-        switch (strinput.length()) {
-            case 1:
-                return nineteenMinus(strinput.substring(0, 1));
-            case 2:
-                retval = tens(strinput.substring(0, 1));
-                if (!strinput.substring(1, 2).equals("0")) {
-                    retval = retval + "-" ;
-                }
-                retval = retval + nineteenMinus(strinput.substring(1, 2));
-                return retval;
-            case 3:
-                retval = nineteenMinus(strinput.substring(0, 1)) + " hundred ";
-                String strones = strinput.substring(1, 3);
-                int intones = Integer.parseInt(strones);
-                if (intones < 20) {
-                    retval = retval + nineteenMinus(strones);
-                } else {
-                    retval = retval + twentyPlus(strones, intones);
-                }
-                //retval = retval + tens(strinput.substring(1, 1));
-                //if (strinput.substring(1, 1).equals("0") && strinput.substring(2, 2).equals("0")) {
-                //    retval = retval + " - ";
-                //}
-                retval = retval + nineteenMinus(strinput.substring(2, 2));
-                return retval;
-            default:
-                return "ERROR";
-
-        }
-    }
-
-    public static String tens(String input) {
-        switch (input) {
-            case "2":
-                return "twenty";
-            case "3":
-                return "thirty";
-            case "4":
-                return "fourty";
-            case "5":
-                return "fifty";
-            case "6":
-                return "sixty";
-            case "7":
-                return "seventy";
-            case "8":
-                return "eightty";
-            case "9":
-                return "ninety";
-            default:
-                return "";
-        }
-    }
-
-    public static String nineteenMinus(String input) {
-        switch (input) {
+    public static String wordsFromNum(String strinput) {
+        switch (strinput) {
             case "0":
                 return "";
             case "1":
@@ -170,9 +108,49 @@ public class NumToWord {
             case "19":
                 return "nineteen";
             default:
-                return "";
+        }
+        String retval = "";
+        switch (strinput.length()) {
+            case 1:
+                return wordsFromNum(strinput.substring(0, 1));
+            case 2:
+                retval = tens(strinput.substring(0, 1));
+                if (!strinput.substring(1, 2).equals("0") && !strinput.substring(0,1).equals("0")) {
+                    retval = retval + "-" ;
+                }
+                retval = retval + wordsFromNum(strinput.substring(1, 2));
+                return retval;
+            case 3:
+                retval = wordsFromNum(strinput.substring(0, 1)) + " hundred ";
+                String strones = strinput.substring(1, 3);
+                retval = retval + wordsFromNum(strones);
+                return retval;
+            default:
+                return "ERROR";
 
         }
     }
 
+    public static String tens(String input) {
+        switch (input) {
+            case "2":
+                return "twenty";
+            case "3":
+                return "thirty";
+            case "4":
+                return "fourty";
+            case "5":
+                return "fifty";
+            case "6":
+                return "sixty";
+            case "7":
+                return "seventy";
+            case "8":
+                return "eightty";
+            case "9":
+                return "ninety";
+            default:
+                return "";
+        }
+    }
 }
