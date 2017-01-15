@@ -20,11 +20,11 @@ public class NumToWord {
 
     public static void debug() {
         String test = "1";
-        for (int ii = 0; ii < 3005; ii++) {
+        for (int i = 0; i < 3005; i++) {
             test = test + "0";
         }
         test = test + ".";
-        for (int ii = 0; ii < 3005; ii++) {
+        for (int i = 0; i < 3005; i++) {
             test = test + "0";
         }
         test = test + "1";
