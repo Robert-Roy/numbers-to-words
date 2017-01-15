@@ -1011,5 +1011,6 @@ public class LatinUnits {
         " septenonagintanongentillion ",
         " octononagintanongentillion ",
         " novenonagintanongentillion ",
-        " millillion "};
+        " millillion ",
+        " millimillion "};
 }

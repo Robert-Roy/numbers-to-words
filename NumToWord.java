@@ -12,13 +12,34 @@ import java.io.InputStreamReader;
  * @author Robert Roy <www.robertsworkspace.com>
  */
 public class NumToWord {
+
     public static void main(String[] args) {
+        run();
+        //debug();
+    }
+
+    public static void debug() {
+        String test = "1";
+        for (int ii = 0; ii < 3005; ii++) {
+            test = test + "0";
+        }
+        test = test + ".";
+        for (int ii = 0; ii < 3005; ii++) {
+            test = test + "0";
+        }
+        test = test + "1";
+        System.out.println(test.length());
+        System.out.println(isValid(test));
+        System.out.println(convert(test));
+    }
+
+    public static void run() {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         String input = "";
         String output = "";
         // Validate Input
         while (!isValid(input)) {
-            System.out.print("Input a commaless whole number:");
+            System.out.print("Input a number (no commas):");
             try {
                 input = br.readLine(); // get user input
             } catch (IOException ex) {
@@ -26,24 +47,95 @@ public class NumToWord {
                 System.exit(0);
             }
         }
+        output = convert(input);
+        System.out.println(output);
+    }
+
+    public static String convert(String input) {
+        int decimalIndex;
+        String output = "";
         String strNegative = "";
         if (isNegative(input)) {
             strNegative = "negative ";
             input = input.substring(1, input.length());
         }
-        while (!input.equals("")) {
+        decimalIndex = input.indexOf(".");
+        if (decimalIndex == -1) {
+            output = getConvertedString(input, false);
+        } else {
+            String strPredecimal = input.substring(0, decimalIndex);
+            String strPostdecimal = input.substring(decimalIndex + 1, input.length());
+            strPredecimal = getConvertedString(strPredecimal, false);
+            strPostdecimal = getConvertedString(strPostdecimal, true);
+            if (strPredecimal.equals("zero") && strPostdecimal.length() != 0) {
+                output = strPostdecimal;
+            } else if (strPredecimal.length() != 0 && strPostdecimal.length() != 0) {
+                output = strPredecimal + " and " + strPostdecimal;
+            } else {
+                output = strPredecimal + strPostdecimal;
+            }
+
+        }
+        output = strNegative + output;
+        return output;
+    }
+
+    public static String getConvertedString(String strConvert, boolean blnFraction) {
+        Boolean blnFractionSelected = false;
+        String strFraction = "";
+        String retval = "";
+        while (!strConvert.equals("")) {
             //Note: There are no commas in the input at this point, comma is only
             //used for ease of reference
             //number of commas that would be in the number written out
-            int commas = (input.length() - 1) / 3;
+            int commas = (strConvert.length() - 1) / 3;
             //everything before the comma (or end, if there is not one)
-            int precomma = input.length() % 3;
+            int precomma = strConvert.length() % 3;
             // input without length cannot get to this point, so 0 is always 3
             if (precomma == 0) {
                 precomma = 3;
             }
+            if (blnFraction && !blnFractionSelected) {
+                Byte nextUnit = 0;
+                switch (precomma) {
+                    case 1:
+                        strFraction = " ten";
+                        break;
+                    case 2:
+                        strFraction = " hundred";
+                        break;
+                    case 3:
+                        nextUnit = 1;
+                }
+                String unit = LatinUnits.UNITS[commas + nextUnit].trim();
+                if (unit.length() > 0) {
+                    try {
+                        int value = Integer.parseInt(strConvert);
+                        if (value == 1) {
+                            strFraction = strFraction + " " + unit + "th";
+                        } else {
+                            strFraction = strFraction + " " + unit + "ths";
+                        }
+                    } catch (Exception ex) {
+                        strFraction = strFraction + " " + unit + "ths";
+                    }
+                } else {
+                    try {
+                        int value = Integer.parseInt(strConvert);
+                        if (value == 1) {
+                            strFraction = strFraction + "th";
+                        } else {
+                            strFraction = strFraction + "ths";
+                        }
+                    } catch (Exception ex) {
+                        strFraction = strFraction + "ths";
+
+                    }
+                }
+                blnFractionSelected = true;
+            }
             // substring of everything before the comma
-            String strThisUnit = input.substring(0, precomma);
+            String strThisUnit = strConvert.substring(0, precomma);
             //loop trims zeroes at the beginning of numbers
             for (int a = 0; a < strThisUnit.length(); a++) {
                 if (strThisUnit.substring(a, a + 1).equals("0")) {
@@ -53,21 +145,26 @@ public class NumToWord {
                     a--;
                 } else {
                     // if a nonzero number is hit, output is created
-                    output = output + wordsFromNum(strThisUnit) + LatinUnits.UNITS[commas];
+                    retval = retval + wordsFromNum(strThisUnit) + LatinUnits.UNITS[commas];
                     break;
                 }
             }
             // input is cut shorter to remove addressed portion
-            input = input.substring(precomma, input.length());
+            strConvert = strConvert.substring(precomma, strConvert.length());
         }
-        if (output.equals("")) {
-            output = "zero"; // if no output has been added yet, result is zero
+
+        if (retval.equals("")) {
+            retval = "zero"; // if no output has been added yet, result is zero
+        }
+        retval = retval.replaceAll("  ", " "); // remove doublespaces
+        retval = retval.trim(); // remove trailing spaces
+        if (blnFraction && !strFraction.equals("")) {
+            return retval + strFraction;
+        } else if (blnFraction) {
+            return "";
         } else {
-            output = strNegative + output;
+            return retval;
         }
-        output = output.replaceAll("  ", " "); // remove doublespaces
-        output = output.trim(); // remove trailing spaces
-        System.out.println(output);
     }
 
     public static String wordsFromNum(String strinput) {
@@ -167,16 +264,21 @@ public class NumToWord {
             return false;
         }
         if (isNegative(input)) {
-            if (!(input.length() < 3008)) {
+            input = input.substring(1, input.length());
+        }
+        int decimalIndex = 0;
+        decimalIndex = input.indexOf(".");
+        if (decimalIndex == -1 && input.length() < 3007) {
+            return true;
+        } else {
+            String strPredecimal = input.substring(0, decimalIndex);
+            String strPostdecimal = input.substring(decimalIndex + 1, input.length());
+            if (strPredecimal.length() < 3007 && strPostdecimal.length() < 3007) {
+                return true;
+            } else {
                 return false;
             }
-        } else if (!(input.length() < 3007)) {
-            return false;
         }
-        if (!isNumeric(input)) {
-            return false;
-        }
-        return true;
     }
 
     public static boolean isNegative(String input) {
@@ -187,7 +289,7 @@ public class NumToWord {
     }
 
     public static boolean isNumeric(String input) {
-        final int ALLOWED_DECIMALS = 0; //maximum number of decimals. 0 for ints, 1 for other
+        final int ALLOWED_DECIMALS = 1; //maximum number of decimals. 0 for ints, 1 for other
         int decimals = 0; //counter
         if (input.length() == 0) {
             return false; // "" is not numeric
