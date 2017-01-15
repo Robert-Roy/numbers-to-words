@@ -280,7 +280,9 @@ public class NumToWord {
         } else {
             String strPredecimal = input.substring(0, decimalIndex);
             String strPostdecimal = input.substring(decimalIndex + 1, input.length());
-            if (strPredecimal.length() < 3007 && strPostdecimal.length() < 3007) {
+            if(strPredecimal.length() + strPostdecimal.length() == 0){
+                return false;
+            } else if(strPredecimal.length() < 3007 && strPostdecimal.length() < 3007) {
                 return true;
             } else {
                 return false;
