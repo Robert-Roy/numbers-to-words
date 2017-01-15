@@ -14,11 +14,13 @@ import java.io.InputStreamReader;
 public class NumToWord {
 
     public static void main(String[] args) {
+        //choose which mode to run in
         run();
         //debug();
     }
 
     public static void debug() {
+        // here I can run whatever code I want to test
         String test = "1";
         for (int i = 0; i < 3005; i++) {
             test = test + "0";
@@ -52,29 +54,30 @@ public class NumToWord {
     }
 
     public static String convert(String input) {
-        int decimalIndex;
+        int decimalIndex; // where in input the decimal is
         String output = "";
-        String strNegative = "";
+        String strNegative = ""; // added to output later
         if (isNegative(input)) {
             strNegative = "negative ";
-            input = input.substring(1, input.length());
+            input = input.substring(1, input.length()); // trim "-"
         }
         decimalIndex = input.indexOf(".");
         if (decimalIndex == -1) {
-            output = getConvertedString(input, false);
+            output = getConvertedString(input, false); // convert input
         } else {
+            // split string at decimal
             String strPredecimal = input.substring(0, decimalIndex);
             String strPostdecimal = input.substring(decimalIndex + 1, input.length());
+            // convert both strings
             strPredecimal = getConvertedString(strPredecimal, false);
             strPostdecimal = getConvertedString(strPostdecimal, true);
             if (strPredecimal.equals("zero") && strPostdecimal.length() != 0) {
-                output = strPostdecimal;
+                output = strPostdecimal; // only post decimal stuff
             } else if (strPredecimal.length() != 0 && strPostdecimal.length() != 0) {
-                output = strPredecimal + " and " + strPostdecimal;
+                output = strPredecimal + " and " + strPostdecimal; // pre and post decimal stuff
             } else {
-                output = strPredecimal + strPostdecimal;
+                output = strPredecimal; // only predecimal stuff
             }
-
         }
         output = strNegative + output;
         return output;
@@ -96,6 +99,7 @@ public class NumToWord {
                 precomma = 3;
             }
             if (blnFraction && !blnFractionSelected) {
+                // find the appropriate fraction for post-decimal text
                 Byte nextUnit = 0;
                 switch (precomma) {
                     case 1:
