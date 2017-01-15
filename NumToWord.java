@@ -12,38 +12,13 @@ import java.io.InputStreamReader;
  * @author Robert Roy <www.robertsworkspace.com>
  */
 public class NumToWord {
-
-    private static final String[] UNITS = new String[]{
-        "",
-        " thousand ",
-        " million ",
-        " billion ",
-        " trillion ",
-        " quadrillion ",
-        " quintillion ",
-        " sextillion ",
-        " septillion ",
-        " octillion ",
-        " nonillion ",
-        " decillion ",
-        " undecillion ",
-        " duodecillion ",
-        " tredecillion ",
-        " quattuordecillion ",
-        " quindecillion ",
-        " sexdecillion ",
-        " septendecillion ",
-        " octodecillion ",
-        " novemdecillion ",
-        " vigintillion ",};
-
     public static void main(String[] args) {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         String input = "";
         String output = "";
         // Validate Input
         while (!isValid(input)) {
-            System.out.print("Input a commaless whole number between 10^67 and -10^67:");
+            System.out.print("Input a commaless whole number:");
             try {
                 input = br.readLine(); // get user input
             } catch (IOException ex) {
@@ -52,7 +27,7 @@ public class NumToWord {
             }
         }
         String strNegative = "";
-        if(isNegative(input)){
+        if (isNegative(input)) {
             strNegative = "negative ";
             input = input.substring(1, input.length());
         }
@@ -78,7 +53,7 @@ public class NumToWord {
                     a--;
                 } else {
                     // if a nonzero number is hit, output is created
-                    output = output + wordsFromNum(strThisUnit) + UNITS[commas];
+                    output = output + wordsFromNum(strThisUnit) + LatinUnits.UNITS[commas];
                     break;
                 }
             }
@@ -87,7 +62,7 @@ public class NumToWord {
         }
         if (output.equals("")) {
             output = "zero"; // if no output has been added yet, result is zero
-        }else{
+        } else {
             output = strNegative + output;
         }
         output = output.replaceAll("  ", " "); // remove doublespaces
@@ -187,32 +162,30 @@ public class NumToWord {
         }
     }
 
-    public static boolean isValid(String input){
-        if(input.equals("")){
+    public static boolean isValid(String input) {
+        if (input.equals("")) {
             return false;
         }
-        if(isNegative(input)){
-            if(!(input.length() < 68)){
+        if (isNegative(input)) {
+            if (!(input.length() < 3008)) {
                 return false;
             }
-        }else{
-            if(!(input.length() < 67)){
-                return false;
-            }
+        } else if (!(input.length() < 3007)) {
+            return false;
         }
-        if(!isNumeric(input)){
+        if (!isNumeric(input)) {
             return false;
         }
         return true;
     }
-    
-    public static boolean isNegative(String input){
-        if(input.substring(0,1).equals("-")){
+
+    public static boolean isNegative(String input) {
+        if (input.substring(0, 1).equals("-")) {
             return true;
         }
         return false;
     }
-    
+
     public static boolean isNumeric(String input) {
         final int ALLOWED_DECIMALS = 0; //maximum number of decimals. 0 for ints, 1 for other
         int decimals = 0; //counter
@@ -222,9 +195,9 @@ public class NumToWord {
         for (int i = 0; i < input.length(); i++) {
             switch (input.substring(i, i + 1)) {
                 case "-":
-                    if(i == 0){
+                    if (i == 0) {
                         break;
-                    }else{
+                    } else {
                         return false;
                     }
                 case "0":
