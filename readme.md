@@ -1,4 +1,4 @@
-#numbers-to-words
+# numbers-to-words
 
 I had a programming competition against a buddy to see who could solve the problem
 of turning a number "532" into a string "five hundred thirty-two" faster. Since, 
